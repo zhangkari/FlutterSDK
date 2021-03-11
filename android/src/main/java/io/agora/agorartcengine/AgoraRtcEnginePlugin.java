@@ -706,23 +706,26 @@ public class AgoraRtcEnginePlugin implements MethodCallHandler, EventChannel.Str
 
             case "addVideoWatermark": {
                 String encryptionMode = call.argument("encryptionMode");
+                WatermarkOptions options = new WatermarkOptions();
                 String url = call.argument("url");
                 HashMap<String, Object> watermarkOptions = call.argument("options");
-                HashMap<String, Object> positionLandscapeOptions = (HashMap<String, Object>) watermarkOptions.get("positionInPortraitMode");
-                WatermarkOptions options = new WatermarkOptions();
                 WatermarkOptions.Rectangle landscapePosition = new WatermarkOptions.Rectangle();
-                landscapePosition.height = (int) positionLandscapeOptions.get("height");
-                landscapePosition.width = (int) positionLandscapeOptions.get("width");
-                landscapePosition.x = (int) positionLandscapeOptions.get("x");
-                landscapePosition.y = (int) positionLandscapeOptions.get("y");
+                HashMap<String, Object> positionLandscapeOptions = (HashMap<String, Object>) watermarkOptions.get("positionInLandscapeMode");
+                if (positionLandscapeOptions != null) {
+                    landscapePosition.height = (int) positionLandscapeOptions.get("height");
+                    landscapePosition.width = (int) positionLandscapeOptions.get("width");
+                    landscapePosition.x = (int) positionLandscapeOptions.get("x");
+                    landscapePosition.y = (int) positionLandscapeOptions.get("y");
+                }
 
-                HashMap<String, Object> positionPortraitOptions = (HashMap<String, Object>) watermarkOptions.get("positionInPortraitMode");
                 WatermarkOptions.Rectangle portraitPosition = new WatermarkOptions.Rectangle();
-                portraitPosition.height = (int) positionPortraitOptions.get("height");
-                portraitPosition.width = (int) positionPortraitOptions.get("width");
-                portraitPosition.x = (int) positionPortraitOptions.get("x");
-                portraitPosition.y = (int) positionPortraitOptions.get("y");
-
+                HashMap<String, Object> positionPortraitOptions = (HashMap<String, Object>) watermarkOptions.get("positionInPortraitMode");
+                if (positionPortraitOptions != null) {
+                    portraitPosition.height = (int) positionPortraitOptions.get("height");
+                    portraitPosition.width = (int) positionPortraitOptions.get("width");
+                    portraitPosition.x = (int) positionPortraitOptions.get("x");
+                    portraitPosition.y = (int) positionPortraitOptions.get("y");
+                }
                 options.positionInLandscapeMode = landscapePosition;
                 options.visibleInPreview = (boolean) watermarkOptions.get("visibleInPreview");
                 options.positionInPortraitMode = portraitPosition;

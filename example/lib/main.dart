@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
@@ -88,7 +89,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _initAgoraRtcEngine() async {
-    AgoraRtcEngine.create('YOUR APP ID');
+    AgoraRtcEngine.create('774f600cf10d4dbd806e733104f1d225');
 
     AgoraRtcEngine.enableVideo();
     AgoraRtcEngine.enableAudio();
@@ -146,16 +147,39 @@ class _MyAppState extends State<MyApp> {
     };
   }
 
+  void addWatermark() {
+    VideoEncoderConfiguration config = VideoEncoderConfiguration();
+    config.orientationMode = VideoOutputOrientationMode.FixedPortrait;
+    AgoraRtcEngine.setVideoEncoderConfiguration(config);
+
+    WatermarkOptions options = WatermarkOptions({
+      "visibleInPreview": true,
+      "positionInPortraitMode": {
+        "x": 100,
+        "y": 100,
+        "width": 120,
+        "height": 120
+      }
+    });
+    AgoraRtcEngine.addVideoWatermark("/assets/icon.png", options);
+  }
+
   void _toggleChannel() {
     setState(() async {
       if (_isInChannel) {
+        AgoraRtcEngine.clearVideoWatermarks();
         _isInChannel = false;
         await AgoraRtcEngine.leaveChannel();
         await AgoraRtcEngine.stopPreview();
       } else {
         _isInChannel = true;
+        addWatermark();
         await AgoraRtcEngine.startPreview();
-        await AgoraRtcEngine.joinChannel(null, 'flutter', null, 0);
+        await AgoraRtcEngine.joinChannel(
+            "006774f600cf10d4dbd806e733104f1d225IADrcxlZp8j04mYd/s4L5+S3Q2gTp1sc1l2NqcA9P4pQSAx+f9h8YHBUIgBeb2KLLQpKYAQAAQDN7UhgAgDN7UhgAwDN7UhgBADN7Uhg",
+            'test',
+            null,
+            100);
       }
     });
   }
