@@ -1,4 +1,6 @@
 # Change log
+## 1.0.15
+* fix 'addVideoWatermark' in Android
 
 ## 1.0.14
 * fix `playEffect` bug
