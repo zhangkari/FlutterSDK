@@ -4,6 +4,12 @@ import 'dart:ui';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:flutter/material.dart';
 
+const String APP_ID = "774f600cf10d4dbd806e733104f1d225";
+const String APP_TOKEN =
+    "006774f600cf10d4dbd806e733104f1d225IADTOiViJa7WqWz8bcyafMpIIrB6G72MZIRTBXFPnG+Emgx+f9h8YHBUIgBeb2KLfwZLYAQAAQAf6klgAgAf6klgAwAf6klgBAAf6klg";
+const String CHANNEL = "test";
+const int USER_ID = 101;
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
@@ -89,7 +95,7 @@ class _MyAppState extends State<MyApp> {
   }
 
   Future<void> _initAgoraRtcEngine() async {
-    AgoraRtcEngine.create('774f600cf10d4dbd806e733104f1d225');
+    AgoraRtcEngine.create(APP_ID);
 
     AgoraRtcEngine.enableVideo();
     AgoraRtcEngine.enableAudio();
@@ -147,19 +153,21 @@ class _MyAppState extends State<MyApp> {
     };
   }
 
+  static const int tile = 60;
+  static const int width = 360;
+  static const int height = 640;
+  static const int x = 200;
+  static const int y = 200;
+
   void addWatermark() {
     VideoEncoderConfiguration config = VideoEncoderConfiguration();
     config.orientationMode = VideoOutputOrientationMode.FixedPortrait;
+    // config.dimensions = Size(width.toDouble(), height.toDouble());
     AgoraRtcEngine.setVideoEncoderConfiguration(config);
 
     WatermarkOptions options = WatermarkOptions({
       "visibleInPreview": true,
-      "positionInPortraitMode": {
-        "x": 100,
-        "y": 100,
-        "width": 120,
-        "height": 120
-      }
+      "positionInPortraitMode": {"x": x, "y": y, "width": tile, "height": tile}
     });
     AgoraRtcEngine.addVideoWatermark("/assets/icon.png", options);
   }
@@ -175,11 +183,7 @@ class _MyAppState extends State<MyApp> {
         _isInChannel = true;
         addWatermark();
         await AgoraRtcEngine.startPreview();
-        await AgoraRtcEngine.joinChannel(
-            "006774f600cf10d4dbd806e733104f1d225IADrcxlZp8j04mYd/s4L5+S3Q2gTp1sc1l2NqcA9P4pQSAx+f9h8YHBUIgBeb2KLLQpKYAQAAQDN7UhgAgDN7UhgAwDN7UhgBADN7Uhg",
-            'test',
-            null,
-            100);
+        await AgoraRtcEngine.joinChannel(APP_TOKEN, CHANNEL, null, USER_ID);
       }
     });
   }
@@ -198,7 +202,10 @@ class _MyAppState extends State<MyApp> {
   }
 
   Iterable<Widget> get _renderWidget sync* {
-    yield AgoraRenderWidget(0, local: true, preview: false);
+    yield Stack(alignment: AlignmentDirectional.bottomStart, children: [
+      AgoraRenderWidget(0, local: true, preview: false),
+      Text("hello", style: TextStyle(color: Colors.white)),
+    ]);
 
     for (final uid in _remoteUsers) {
       yield AgoraRenderWidget(uid);
